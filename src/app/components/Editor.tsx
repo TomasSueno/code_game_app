@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { useEffect, useState, useRef } from 'react';
+import Link from 'next/link';
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -55,6 +56,7 @@ useEffect(() => {
     </p>
       <button className="finishChallengeButton" onClick={runCode}>Run code</button>
       <button className="finishChallengeButton">Finish challenge</button>
+      <Link href="/"><button className="finishChallengeButton">Go back home</button></Link>
     </div>
     <MonacoEditor height="100vh" defaultLanguage="javascript" 
     loading={<div className="loading_screen">Loading ...</div>}
