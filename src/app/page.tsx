@@ -1,20 +1,24 @@
 "use client"
 
-import { log } from 'console';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 export default function Editor() {
   const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
-  useEffect(() => {
-  try {
-    localStorage.setItem("code", "text")
-    localStorage.getItem("code")
-  } catch (error) {
-    
-  }
-  }, [])
+  const [code, setCode] = useState("")
+  const [printResult, setPrintResult] = useState("")
+
+useEffect(() => {
+  setPrintResult(localStorage.getItem("code") ?? "")
+  setCode(localStorage.getItem("code") ?? "");
+}, []);
+
+  function handleChange(value?: string) {
+    const v = value ?? "";
+    localStorage.setItem("code", v);
+  };
+
 
   return (
   <>
@@ -27,17 +31,18 @@ export default function Editor() {
       Požiadavky: použi cyklus for alebo while a nepoužívaj vstavané funkcie na filtrovanie polí.
     </p>
       <button className="finishChallengeButton">Finish challenge</button>
-      <button className="finishChallengeButton">Save code</button>
     </div>
     <MonacoEditor height="100vh" defaultLanguage="javascript" loading={<div className="loading_screen">Loading ...</div>}
-    theme="vs-dark" value='aaaaa'
+    theme="vs-dark"
+    value={code}
+    onChange={handleChange}
       options={{
       minimap: { enabled: false },
       fontSize: 14
     }} />
     <div className="console">
       <h1>Konzola</h1>
-      <p>aaaa</p>
+      <p>{printResult}</p>
     </div>
   </div>
   </>
