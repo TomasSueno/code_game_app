@@ -1,18 +1,40 @@
 "use client"
 
 import dynamic from 'next/dynamic';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export default function Editor() {
   const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
   const [code, setCode] = useState("")
-  const [printResult, setPrintResult] = useState("")
+  
+
+  const [output, setOutput] = useState<string[]>([]);
+  const consoleRef = useRef(console.log);
+
+  useEffect(() => {
+    console.log = (...args: any[]) => {
+      const messages = args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a));
+      setOutput(prev => [...prev, ...messages]);
+      consoleRef.current(...args);
+    };
+    return () => { console.log = consoleRef.current };
+  }, []);
+
+  const runCode = () => {
+    setOutput([])
+    try { 
+      const currentCode = localStorage.getItem("code") ?? "";
+      eval(currentCode)
+    } 
+    catch(e) { setOutput(prev => [...prev, String(e)]); }
+  };
+
+
 
 useEffect(() => {
-  setPrintResult(localStorage.getItem("code") ?? "")
   setCode(localStorage.getItem("code") ?? "");
-}, []);
+}, [output]);
 
   function handleChange(value?: string) {
     const v = value ?? "";
@@ -30,11 +52,12 @@ useEffect(() => {
       Príklad: ak je vstup n = 10, výstup bude 30 (2 + 4 + 6 + 8 + 10). 
       Požiadavky: použi cyklus for alebo while a nepoužívaj vstavané funkcie na filtrovanie polí.
     </p>
+      <button className="finishChallengeButton" onClick={runCode}>Run code</button>
       <button className="finishChallengeButton">Finish challenge</button>
     </div>
     <MonacoEditor height="100vh" defaultLanguage="javascript" loading={<div className="loading_screen">Loading ...</div>}
     theme="vs-dark"
-    value={code}
+    defaultValue={code}
     onChange={handleChange}
       options={{
       minimap: { enabled: false },
@@ -42,7 +65,8 @@ useEffect(() => {
     }} />
     <div className="console">
       <h1>Konzola</h1>
-      <p>{printResult}</p>
+      <p>{code}</p>
+      {output.map((line, i) => <div key={i} className="console_text">{line}</div>)}
     </div>
   </div>
   </>

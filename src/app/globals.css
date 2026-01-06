@@ -57,6 +57,7 @@ a {
   color: white;
   background-color: #171717;
   height: 100vh;
+  min-width: 275px;
   width: 45vw;
   border: 1px solid white;
   overflow-y: auto;
@@ -76,7 +77,7 @@ a {
 }
 
 .finishChallengeButton {
-  margin-top: 40px;
+  margin-top: 20px;
   width: 90%;
   margin-left: 5%;
   align-items: center;
@@ -90,6 +91,11 @@ a {
 
 .finishChallengeButton:hover { 
   scale: 1.05 
+}
+
+.console_text {
+  padding: 1px 8px;
+  font-size: 18px;
 }
 
 @media (prefers-color-scheme: dark) {
