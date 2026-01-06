@@ -65,7 +65,7 @@ useEffect(() => {
     }} />
     <div className="console">
       <h1>Konzola</h1>
-      <p>{code}</p>
+      {/* <p>{code}</p> */}
       {output.map((line, i) => <div key={i} className="console_text">{line}</div>)}
     </div>
   </div>
