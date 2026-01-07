@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loading_screen {
+  background-color: #0a0a0a;
+  width: 100vw;
+  height: 100vh;
+  color: white;
+  font-size: 60px;
+  text-align: center;
+  padding-top: calc(50vh - 60px);
+}
+
+.assignment,
+.console {
+  color: white;
+  background-color: #171717;
+  height: 100vh;
+  min-width: 275px;
+  width: 45vw;
+  border: 1px solid white;
+  overflow-y: auto;
+}
+
+.assignment h1,
+.console h1 {
+  text-align: center;
+  margin: 12px;
+  margin-bottom: 30px;
+}
+
+.assignment p,
+.console p {
+  padding: 16px;
+  line-height: 25px;
+  text-align: block;
+}
+
+.finishChallengeButton,
+.runCode,
+.backButton {
+  margin-top: 20px;
+  width: 90%;
+  margin-left: 5%;
+  align-items: center;
+  background-color: white;
+  color: black;
+  padding: 5px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition-duration: 0.2s;
+}
+
+.finishChallengeButton:hover,
+.runCode:hover,
+.backButton:hover { 
+  scale: 1.05 
+}
+
+.console_text {
+  padding: 1px 8px;
+  font-size: 18px;
+}
