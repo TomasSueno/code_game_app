@@ -39,6 +39,10 @@
   text-align: block;
 }
 
+.assignment h3 {
+  padding: 16px;
+}
+
 .finishChallengeButton,
 .runCode,
 .backButton {

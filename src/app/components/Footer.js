@@ -7,7 +7,7 @@ export default function Footer() {
         <>
         <footer className={styles.footer}>
             <p className={styles.text}>
-                © {new Date().getFullYear()} CodeGame. All rights reserved.
+                © {new Date().getFullYear()} CodeGame. Všetky práva vyhradené.
             </p>
         </footer>
         </>

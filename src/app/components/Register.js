@@ -7,34 +7,34 @@ export default function Register() {
         <>
         <div className={styles.wrapper}>
             <form className={styles.form}>
-                <h1 className={styles.title}>Register</h1>
+                <h1 className={styles.title}>Registrovať sa</h1>
 
                 <input
                 type="text"
-                placeholder="Username"
+                placeholder="Používateľské meno"
                 className={styles.input}
                 />
 
                 <input
                 type="email"
-                placeholder="Email"
+                placeholder="E-mail"
                 className={styles.input}
                 />
 
                 <input
                 type="password"
-                placeholder="Password"
+                placeholder="Heslo"
                 className={styles.input}
                 />
 
                 <input
                 type="password"
-                placeholder="Confirm password"
+                placeholder="Potvrď heslo"
                 className={styles.input}
                 />
 
                 <button className={styles.button}>
-                Create account
+                Vytvor účet
                 </button>
             </form>
         </div>

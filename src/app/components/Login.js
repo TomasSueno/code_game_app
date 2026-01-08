@@ -7,22 +7,22 @@ export default function Login() {
         <>
         <div className={styles.wrapper}>
             <form className={styles.form}>
-                <h1 className={styles.title}>Login</h1>
+                <h1 className={styles.title}>Prihlásenie</h1>
 
                 <input
                 type="email"
-                placeholder="Email"
+                placeholder="E-mail"
                 className={styles.input}
                 />
 
                 <input
                 type="password"
-                placeholder="Password"
+                placeholder="Heslo"
                 className={styles.input}
                 />
 
                 <button className={styles.button}>
-                Sign in
+                Prihlásiť sa
                 </button>
             </form>
         </div>

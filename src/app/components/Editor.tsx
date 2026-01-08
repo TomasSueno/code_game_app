@@ -41,20 +41,54 @@ useEffect(() => {
     localStorage.setItem("code", v);
   };
 
+const [seconds, setSeconds] = useState(0)
+const [minutes, setMinutes] = useState(0)
+const start = performance.now()
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    const elapsed = Math.round((performance.now() - start) / 1000);
+    const newMinutes = elapsed / 60;
+    const newSeconds = elapsed % 60;
+    if(newSeconds == 60) {
+      setMinutes(newMinutes+1)
+    }
+    setSeconds(newSeconds)
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
 
   return (
   <>
+  <p>{seconds} sekúnd a {minutes} minút</p>
   <div className={styles.container}>
     <div className={styles.assignment}>
-    <h1>Zadanie: Súčet párnych čísel</h1>
-    <p>Napíš program v JavaScripte, ktorý má dané celé číslo n (1 ≤ n ≤ 1000), 
-      spočíta súčet všetkých párnych čísel od 1 po n vrátane a výsledok vypíše do konzoly. 
-      Príklad: ak je vstup n = 10, výstup bude 30 (2 + 4 + 6 + 8 + 10). 
-      Požiadavky: použi cyklus for alebo while a nepoužívaj vstavané funkcie na filtrovanie polí.
+
+    <h1>Zadanie: Zoskupenie anagramov</h1>
+    <p>Napíš funkciu groupAnagrams(words), ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú 
+      navzájom anagramy. <br></br> <br></br> Anagram znamená, že slová majú rovnaké znaky v rovnakom počte, iba v inom poradí.
     </p>
-      <button className={styles.runCode} onClick={runCode}>Run code</button>
-      <button className={styles.finishChallengeButton}>Finish challenge</button>
-      <Link href="/"><button className={styles.backButton}>Go back home</button></Link>
+    <h3>Vstup:</h3>
+    <p className={styles.assigment_code}>["eat", "tea", "tan", "ate", "nat", "bat"]</p>
+    <h3>Výstup:</h3>
+    <p className={styles.assigment_code}>
+    [ <br></br>
+    ["eat", "tea", "ate"], <br></br>
+    ["tan", "nat"], <br></br>
+    ["bat"] <br></br>
+  ]</p>
+  <h3>Podmienky</h3>
+    <p>
+    - riešenie v JavaScripte <br></br>
+    - poradie skupín ani slov nie je dôležité <br></br>
+    - riešenie má byť efektívne aj pre väčší počet slov <br></br>
+    </p>
+
+
+      <button className={styles.runCode} onClick={runCode}>Spusti kód</button>
+      <button className={styles.finishChallengeButton}>Dokonč úlohu</button>
+      <Link href="/"><button className={styles.backButton}>Vráť sa na hlavnú stránku</button></Link>
     </div>
     <MonacoEditor height="100vh" defaultLanguage="javascript" 
     loading={<div className={styles.loading_screen}>Loading ...</div>}
