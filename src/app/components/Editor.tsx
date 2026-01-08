@@ -83,7 +83,7 @@ useEffect(() => {
     - poradie skupín ani slov nie je dôležité <br></br>
     - riešenie má byť efektívne aj pre väčší počet slov <br></br>
     </p>
-  <p>{seconds} sekúnd a {minutes} minút práce</p>
+  <p>{minutes} minúty a {seconds} sekúnd práce</p>
 
       <button className={styles.runCode} onClick={runCode}>Spustenie kódu</button>
       <button className={styles.finishChallengeButton}>Dokončenie úlohy</button>
