@@ -1,0 +1,46 @@
+.page {
+  min-height: 100vh;
+  background-color: #020617; /* rovnaké ako navbar */
+  color: #e5e7eb;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.feedback {
+  margin-top: 2rem;
+  padding: 1.25rem;
+  max-width: 800px;
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+}
+
+.feedback h3 {
+  margin-bottom: 1rem;
+  color: #e5e7eb;
+}
+
+.metrics {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.metrics span {
+  color: #9ca3af;
+  margin-right: 6px;
+}
+
+.ok {
+  color: #22c55e;
+}
+
+.text {
+  color: #e5e7eb;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}

@@ -86,7 +86,7 @@ useEffect(() => {
   <p>{minutes} minúty a {seconds} sekúnd práce</p>
 
       <button className={styles.runCode} onClick={runCode}>Spustenie kódu</button>
-      <button className={styles.finishChallengeButton}>Dokončenie úlohy</button>
+      <Link href="./feedback"><button className={styles.finishChallengeButton}>Dokončenie úlohy</button></Link>
       <Link href="/"><button className={styles.backButton}>Návrat na hlavnú stránku</button></Link>
     </div>
     <MonacoEditor height="100vh" defaultLanguage="javascript" 
