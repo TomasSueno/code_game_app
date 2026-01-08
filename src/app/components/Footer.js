@@ -5,7 +5,11 @@ import styles from "../styles/Footer.module.css"
 export default function Footer() {
     return (
         <>
-            <p className={styles.footer}>Footer</p>
+        <footer className={styles.footer}>
+            <p className={styles.text}>
+                © {new Date().getFullYear()} CodeGame. All rights reserved.
+            </p>
+        </footer>
         </>
     )
 }

@@ -1,11 +1,12 @@
 .footer {
-    position: absolute;
-    bottom: 0;
-    display: block;
-    background-color: black;
-    color: white;
-    width: 100vw;
-    text-align: center;
-    margin-top: 20px;
-    border-radius: 60px 70px 12px 6px;
+  width: 100%;
+  padding: 16px 32px;
+  background-color: #020617;
+  border-top: 1px solid #1e293b;
+  text-align: center;
+}
+
+.text {
+  color: #9ca3af;
+  font-size: 0.85rem;
 }

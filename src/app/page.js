@@ -8,9 +8,20 @@ import Link from "next/link"
 export default function Home() {
   return (
     <>
-      <Navbar />
-      <Link href="/editor" className={styles.editorLink}>Code editor</Link>
-      <Footer />
+    <main className={styles.container}>
+      <h1 className={styles.nazov}>
+        Edukačný systém na výučbu programovania
+      </h1>
+
+      <p className={styles.popis}>
+        Webová aplikácia zameraná na učenie programovacích jazykov
+        prostredníctvom algoritmických úloh.
+      </p>
+
+      <button className={styles.tlacidlo}>
+        <Link href="/editor">Začať</Link>
+      </button>
+    </main>
     </>
   )
 } 

@@ -3,3 +3,43 @@
     border-radius: 8px 26px 2px 31px;
     margin-left: 20px;
 }
+
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #0f172a; /* dark blue/gray */
+  text-align: center;
+  padding: 40px;
+}
+
+.nazov {
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: #e5e7eb; /* light text */
+  margin-bottom: 20px;
+}
+
+.popis {
+  font-size: 1.1rem;
+  color: #9ca3af; /* muted text */
+  max-width: 600px;
+  margin-bottom: 30px;
+}
+
+.tlacidlo {
+  padding: 12px 28px;
+  font-size: 1rem;
+  background-color: #22c55e; /* accent green */
+  color: #022c22;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.tlacidlo:hover {
+  background-color: #16a34a;
+}
