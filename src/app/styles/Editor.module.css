@@ -25,6 +25,7 @@
   overflow-y: auto;
 }
 
+
 .assignment h1,
 .console h1 {
   text-align: center;
@@ -46,7 +47,7 @@
 .finishChallengeButton,
 .runCode,
 .backButton {
-  margin-top: 20px;
+  margin-top: 10px;
   width: 90%;
   margin-left: 5%;
   align-items: center;
@@ -56,6 +57,7 @@
   border-radius: 15px;
   cursor: pointer;
   transition-duration: 0.2s;
+  margin-bottom: 10px;
 }
 
 .finishChallengeButton:hover,

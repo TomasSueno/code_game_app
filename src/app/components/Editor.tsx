@@ -50,8 +50,8 @@ useEffect(() => {
     const elapsed = Math.round((performance.now() - start) / 1000);
     const newMinutes = elapsed / 60;
     const newSeconds = elapsed % 60;
-    if(newSeconds == 60) {
-      setMinutes(newMinutes+1)
+    if(newMinutes % 1 == 0) {
+      setMinutes(newMinutes)
     }
     setSeconds(newSeconds)
   }, 1000);
@@ -61,7 +61,6 @@ useEffect(() => {
 
   return (
   <>
-  <p>{seconds} sekúnd a {minutes} minút</p>
   <div className={styles.container}>
     <div className={styles.assignment}>
 
@@ -84,11 +83,11 @@ useEffect(() => {
     - poradie skupín ani slov nie je dôležité <br></br>
     - riešenie má byť efektívne aj pre väčší počet slov <br></br>
     </p>
+  <p>{seconds} sekúnd a {minutes} minút práce</p>
 
-
-      <button className={styles.runCode} onClick={runCode}>Spusti kód</button>
-      <button className={styles.finishChallengeButton}>Dokonč úlohu</button>
-      <Link href="/"><button className={styles.backButton}>Vráť sa na hlavnú stránku</button></Link>
+      <button className={styles.runCode} onClick={runCode}>Spustenie kódu</button>
+      <button className={styles.finishChallengeButton}>Dokončenie úlohy</button>
+      <Link href="/"><button className={styles.backButton}>Návrat na hlavnú stránku</button></Link>
     </div>
     <MonacoEditor height="100vh" defaultLanguage="javascript" 
     loading={<div className={styles.loading_screen}>Loading ...</div>}
