@@ -7,7 +7,7 @@ export default function Register() {
         <>
         <div className={styles.wrapper}>
             <form className={styles.form}>
-                <h1 className={styles.title}>Registrovať sa</h1>
+                <h1 className={styles.title}>Registrácia</h1>
 
                 <input
                 type="text"
