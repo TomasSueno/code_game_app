@@ -41,7 +41,7 @@ export default function SignupForm() {
                 />
                 {state?.errors?.password && (
                     <div className={styles.errorSignupMessage}>
-                    <p>Password must:</p>
+                    <p>Heslo musí:</p>
                     <ul>
                         {state.errors.password.map((error) => (
                         <li key={error}>- {error}</li>
