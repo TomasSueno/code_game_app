@@ -18,7 +18,7 @@ export default function Home() {
         prostredníctvom algoritmických úloh.
       </p>
 
-      <Link href="/editor">
+      <Link href="/programmingLang">
       <button className={styles.tlacidlo}>
         Začať
       </button>

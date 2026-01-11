@@ -16,13 +16,13 @@ export default function Navbar() {
                 <Link href="/" className={styles.item}>Domov</Link>
                 </li>
                 <li>
-                <Link href="./editor" className={styles.item}>Začni programovať</Link>
+                <Link href="/programmingLang" className={styles.item}>Začni programovať</Link>
                 </li>
                 <li>
-                <Link href="./signUp" className={styles.item}>Registrácia</Link>
+                <Link href="/signUp" className={styles.item}>Registrácia</Link>
                 </li>
                 <li>
-                <Link href="./login" className={styles.item}>Prihlásenie</Link>
+                <Link href="/login" className={styles.item}>Prihlásenie</Link>
                 </li>
             </ul>
         </nav>
