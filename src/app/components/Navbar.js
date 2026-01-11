@@ -19,7 +19,7 @@ export default function Navbar() {
                 <Link href="./editor" className={styles.item}>Začni programovať</Link>
                 </li>
                 <li>
-                <Link href="./register" className={styles.item}>Registrácia</Link>
+                <Link href="./signUp" className={styles.item}>Registrácia</Link>
                 </li>
                 <li>
                 <Link href="./login" className={styles.item}>Prihlásenie</Link>

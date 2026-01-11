@@ -47,3 +47,7 @@
 .button:hover {
   background-color: #16a34a;
 }
+
+.errorSignupMessage {
+  color: rgb(255,51,51)
+}
