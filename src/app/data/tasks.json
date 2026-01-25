@@ -1,0 +1,171 @@
+{
+  "tasks": [
+    {
+      "language": "JavaScript",
+      "title": "Zoskupenie anagramov",
+      "description": "Napíš funkciu, ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú navzájom anagramy.",
+      "input": "[\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]",
+      "output": "[[\"eat\", \"tea\", \"ate\"], [\"tan\", \"nat\"], [\"bat\"]]",
+      "conditions": [
+        "riešenie v JavaScripte",
+        "poradie skupín ani slov nie je dôležité",
+        "riešenie má byť efektívne"
+      ]
+    },
+    {
+      "language": "JavaScript",
+      "title": "Palindrómový reťazec",
+      "description": "Over, či je zadaný reťazec palindróm. Palindróm sa číta rovnako spredu aj zozadu.",
+      "input": "\"racecar\"",
+      "output": "true",
+      "conditions": [
+        "riešenie v JavaScripte",
+        "ignoruj veľkosť písmen",
+        "časová zložitosť O(n)"
+      ]
+    },
+    {
+      "language": "JavaScript",
+      "title": "Najdlhší spoločný prefix",
+      "description": "Nájdi najdlhší spoločný prefix pre pole reťazcov.",
+      "input": "[\"flower\", \"flow\", \"flight\"]",
+      "output": "\"fl\"",
+      "conditions": [
+        "riešenie v JavaScripte",
+        "ak prefix neexistuje, vráť prázdny reťazec"
+      ]
+    },
+    {
+      "language": "JavaScript",
+      "title": "Zoradenie čísel",
+      "description": "Zoraď pole čísel vzostupne.",
+      "input": "[5, 2, 9, 1, 3]",
+      "output": "[1, 2, 3, 5, 9]",
+      "conditions": [
+        "riešenie v JavaScripte",
+        "nepoužív vstavanú sort funkciu"
+      ]
+    },
+    {
+      "language": "JavaScript",
+      "title": "Fibonacci sekvencia",
+      "description": "Vygeneruj prvých N čísel Fibonacciho sekvencie.",
+      "input": "7",
+      "output": "[0, 1, 1, 2, 3, 5, 8]",
+      "conditions": [
+        "riešenie v JavaScripte",
+        "efektívne riešenie bez rekurzie"
+      ]
+    },
+    {
+      "language": "Python",
+      "title": "Kontrola platného e-mailu",
+      "description": "Over, či zadaný reťazec predstavuje platnú e-mailovú adresu.",
+      "input": "\"test@example.com\"",
+      "output": "true",
+      "conditions": [
+        "riešenie v Pythone",
+        "použi regulárny výraz"
+      ]
+    },
+    {
+      "language": "Python",
+      "title": "Generovanie náhodného hesla",
+      "description": "Vygeneruj náhodné heslo zadanej dĺžky obsahujúce písmená, čísla a špeciálne znaky.",
+      "input": "10",
+      "output": "\"A9$fK2!qP@\"",
+      "conditions": [
+        "riešenie v Pythone",
+        "heslo musí obsahovať aspoň jedno číslo a jeden špeciálny znak"
+      ]
+    },
+    {
+      "language": "Python",
+      "title": "Sčítanie prvočísel",
+      "description": "Vypočítaj súčet všetkých prvočísel menších alebo rovných N.",
+      "input": "10",
+      "output": "17",
+      "conditions": [
+        "riešenie v Pythone",
+        "efektívne overovanie prvočísel"
+      ]
+    },
+    {
+      "language": "Python",
+      "title": "Transformácia JSON dát",
+      "description": "Transformuj JSON dáta do novej štruktúry podľa definovaných pravidiel.",
+      "input": "{\"name\":\"John\",\"age\":30}",
+      "output": "{\"fullName\":\"John\",\"years\":30}",
+      "conditions": [
+        "riešenie v Pythone",
+        "zachovaj dátové typy"
+      ]
+    },
+    {
+      "language": "Python",
+      "title": "Vyhľadávanie v binárnom strome",
+      "description": "Implementuj vyhľadávanie hodnoty v binárnom vyhľadávacom strome.",
+      "input": "{\"tree\":[5,3,7,2,4],\"value\":4}",
+      "output": "true",
+      "conditions": [
+        "riešenie v Pythone",
+        "využitie vlastností BST"
+      ]
+    },
+    {
+      "language": "C",
+      "title": "Implementácia zásobníka pomocou poľa",
+      "description": "Implementuj základné operácie zásobníka pomocou poľa.",
+      "input": "[\"push 1\", \"push 2\", \"pop\"]",
+      "output": "2",
+      "conditions": [
+        "riešenie v jazyku C",
+        "ošetri pretečenie a podtečenie"
+      ]
+    },
+    {
+      "language": "C",
+      "title": "Reverzné prevrátenie reťazca",
+      "description": "Otoč zadaný reťazec.",
+      "input": "\"hello\"",
+      "output": "\"olleh\"",
+      "conditions": [
+        "riešenie v jazyku C",
+        "bez použitia knižničných funkcií na otočenie"
+      ]
+    },
+    {
+      "language": "C",
+      "title": "Hľadanie maxima v poli",
+      "description": "Nájdi maximálnu hodnotu v poli čísel.",
+      "input": "[3, 7, 2, 9, 4]",
+      "output": "9",
+      "conditions": [
+        "riešenie v jazyku C",
+        "jednoduchý lineárny prechod"
+      ]
+    },
+    {
+      "language": "C",
+      "title": "Spočítanie slov v texte",
+      "description": "Spočítaj počet slov v zadanom texte.",
+      "input": "\"Toto je jednoduchý text\"",
+      "output": "4",
+      "conditions": [
+        "riešenie v jazyku C",
+        "slová sú oddelené medzerami"
+      ]
+    },
+    {
+      "language": "C",
+      "title": "Generovanie Fibonacciho sekvencie",
+      "description": "Vygeneruj Fibonacciho sekvenciu do N prvkov.",
+      "input": "6",
+      "output": "[0, 1, 1, 2, 3, 5]",
+      "conditions": [
+        "riešenie v jazyku C",
+        "bez rekurzie"
+      ]
+    }
+  ]
+}

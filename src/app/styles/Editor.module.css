@@ -23,6 +23,7 @@
   width: 45vw;
   border: 1px solid white;
   overflow-y: auto;
+  word-wrap: break-word;
 }
 
 
@@ -40,11 +41,19 @@
   text-align: block;
 }
 
+.time {
+  margin-top: 30px;
+}
+
 .assignment h3 {
   padding: 16px;
 }
 
-.finishChallengeButton,
+.condition_text {
+  margin: 0 0 -25px 0;
+}
+
+.feedback,
 .runCode,
 .backButton {
   margin-top: 10px;
@@ -60,7 +69,7 @@
   margin-bottom: 10px;
 }
 
-.finishChallengeButton:hover,
+.feedback:hover,
 .runCode:hover,
 .backButton:hover { 
   scale: 1.05 

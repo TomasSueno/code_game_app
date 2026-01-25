@@ -4,6 +4,9 @@ import styles from "../styles/Editor.module.css"
 import dynamic from 'next/dynamic';
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from "next/navigation";
+import Tasks from "../data/tasks.json"
+import { url } from "inspector";
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -13,6 +16,14 @@ export default function Editor() {
 
   const [output, setOutput] = useState<string[]>([]);
   const consoleRef = useRef(console.log);
+
+  const tasks = Tasks.tasks
+
+
+    const pathname = usePathname()
+    const decodedPath = decodeURIComponent(pathname)
+    const taskName = decodedPath.split("/")[3]
+
 
   useEffect(() => {
     console.log = (...args: any[]) => {
@@ -64,32 +75,35 @@ useEffect(() => {
   <div className={styles.container}>
     <div className={styles.assignment}>
 
-    <h1>Zadanie: Zoskupenie anagramov</h1>
-    <p>Napíš funkciu groupAnagrams(words), ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú 
+    { 
+    tasks.map((task, i) => (
+      (task.title == taskName) ?
+      <div key={i}>
+      <h1>{taskName}</h1>
+      <p>{task.description}</p>
+      <h3>Vstup:</h3>
+      <p className={styles.assigment_code}>{task.input}</p>
+      <h3>Výstup:</h3>
+      <p className={styles.assigment_code}>{task.output}</p>
+      <h3>Podmienky:</h3>
+      {task.conditions.map((condition, i) => (
+        <p key={i} className={styles.condition_text}> - {condition}</p>
+      ))}
+      </div> 
+      : null
+    ))
+    }
+    {/* <p>Napíš funkciu groupAnagrams(words), ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú 
       navzájom anagramy. <br></br> <br></br> Anagram znamená, že slová majú rovnaké znaky v rovnakom počte, iba v inom poradí.
-    </p>
-    <h3>Vstup:</h3>
-    <p className={styles.assigment_code}>["eat", "tea", "tan", "ate", "nat", "bat"]</p>
-    <h3>Výstup:</h3>
-    <p className={styles.assigment_code}>
-    [ <br></br>
-    ["eat", "tea", "ate"], <br></br>
-    ["tan", "nat"], <br></br>
-    ["bat"] <br></br>
-  ]</p>
-  <h3>Podmienky</h3>
-    <p>
-    - riešenie v JavaScripte <br></br>
-    - poradie skupín ani slov nie je dôležité <br></br>
-    - riešenie má byť efektívne aj pre väčší počet slov <br></br>
-    </p>
-  <p>{minutes} min. a {seconds} sek. práce za sebou</p>
+    </p> */}
+
+  <p className={styles.time}>{minutes} min. a {seconds} sek. práce za sebou</p>
 
       <button className={styles.runCode} onClick={runCode}>Spustenie kódu</button>
-      <Link href="./feedback"><button className={styles.finishChallengeButton}>Dokončenie úlohy</button></Link>
+      <Link href="/feedback"><button className={styles.feedback}>Dokončenie úlohy</button></Link>
       <Link href="/"><button className={styles.backButton}>Návrat na hlavnú stránku</button></Link>
     </div>
-    <MonacoEditor height="100vh" defaultLanguage="javascript" 
+    <MonacoEditor height="100vh" defaultLanguage="javascript"
     loading={<div className={styles.loading_screen}>Loading ...</div>}
     theme="vs-dark"
     defaultValue={code}

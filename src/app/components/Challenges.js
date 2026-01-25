@@ -40,7 +40,7 @@ export default function Challenges() {
             <div className={styles.cards}>
                 {tasks.map((task, index) => (
                     <button 
-                        onClick={() => router.push(`/editor/${slug}+${task}`)}
+                        onClick={() => router.push(`/editor/${slug}/${task}`)}
                         key={index}
                         className={styles.card}
                     >

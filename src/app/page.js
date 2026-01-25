@@ -1,13 +1,14 @@
 "use client"
 
 import styles from "./styles/Homepage.module.css"
-import Navbar from "./components/Navbar"
-import Footer from "./components/Footer"
+import Navbar from "./(pages)/navbar/page.js"
+import Footer from "./(pages)/footer/page.js"
 import Link from "next/link"
 
 export default function Home() {
   return (
     <>
+    <Navbar />
     <main className={styles.container}>
       <h1 className={styles.nazov}>
         Edukačný systém na výučbu programovania
@@ -24,6 +25,7 @@ export default function Home() {
       </button>
       </Link>
     </main>
+    <Footer />
     </>
   )
 } 
