@@ -6,11 +6,31 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import Tasks from "../data/tasks.json"
-import { url } from "inspector";
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
+  interface Task {
+    title: string;
+    description: string;
+    input: string;
+    output: string;
+    conditions: string[];
+  }
+
 export default function Editor() {
+
+     // {
+    //   "language": "JavaScript",
+    //   "title": "Zoskupenie anagramov",
+    //   "description": "Napíš funkciu, ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú navzájom anagramy.",
+    //   "input": "[\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]",
+    //   "output": "[[\"eat\", \"tea\", \"ate\"], [\"tan\", \"nat\"], [\"bat\"]]",
+    //   "conditions": [
+    //     "riešenie v JavaScripte",
+    //     "poradie skupín ani slov nie je dôležité",
+    //     "riešenie má byť efektívne"
+    //   ]
+    // },
 
   const [code, setCode] = useState("")
 
@@ -19,11 +39,17 @@ export default function Editor() {
 
   const tasks = Tasks.tasks
 
+  const pathname = usePathname()
+  const decodedPath = decodeURIComponent(pathname)
+  const taskName = decodedPath.split("/")[3]
+  const language = decodedPath.split("/")[2].toLowerCase()
 
-    const pathname = usePathname()
-    const decodedPath = decodeURIComponent(pathname)
-    const taskName = decodedPath.split("/")[3]
+  const [seconds, setSeconds] = useState(0)
+  const [minutes, setMinutes] = useState(0)
+  const [hours, setHours] = useState(0)
+  const startRef = useRef<number | null>(null)
 
+  const workerRef = useRef<Worker | null>(null)
 
   useEffect(() => {
     console.log = (...args: any[]) => {
@@ -34,41 +60,128 @@ export default function Editor() {
     return () => { console.log = consoleRef.current };
   }, []);
 
+
   const runCode = () => {
-    setOutput([])
-    try { 
-      const currentCode = localStorage.getItem("code") ?? "";
-      eval(currentCode)
-    } 
-    catch(e) { setOutput(prev => [...prev, String(e)]); }
+    setOutput([]);
+    if(language == "javascript") {
+    if (workerRef.current) workerRef.current.terminate(); // zastav predchádzajúci worker
+
+    const blob = new Blob([`
+      self.console = { log: (...args) => postMessage({ type: 'log', data: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)) }) };
+      try { ${code} } catch(e) { postMessage({ type: 'error', data: String(e) }); }
+    `], { type: "application/javascript" });
+
+    const worker = new Worker(URL.createObjectURL(blob));
+    worker.onmessage = (e) => {
+      const { type, data } = e.data;
+      setOutput(prev => [...prev, ...(Array.isArray(data) ? data : [data])]);
+    };
+    workerRef.current = worker;
+    }
+
+      if (language === "python") {
+    const lines = code.split("\n");
+    lines.forEach(line => {
+      const match = line.match(/print\("(.*)"\)/);
+      if (match) setOutput(prev => [...prev, match[1]]);
+    });
+    return;
+  }
+
+  if (language === "c") {
+const lines = code.split("\n");
+
+lines.forEach(line => {
+  const match = line.match(/printf\s*\(\s*"([^"]*)"\s*\)\s*;?/);
+  if (!match) return;
+
+  const text = match[1]
+    .replace(/\\n/g, "\n")
+    .replace(/\\t/g, "\t")
+    .replace(/\\"/g, "\"");
+
+  setOutput(prev => [...prev, text]);
+});
+
+return;
+
+  }
+
   };
+
+
+  // Pre javascript
+
+  //   const runCode = () => {
+  //   setOutput([]);
+  //   if (workerRef.current) workerRef.current.terminate(); // zastav predchádzajúci worker
+
+  //   const blob = new Blob([`
+  //     self.console = { log: (...args) => postMessage({ type: 'log', data: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)) }) };
+  //     try { ${code} } catch(e) { postMessage({ type: 'error', data: String(e) }); }
+  //   `], { type: "application/javascript" });
+
+  //   const worker = new Worker(URL.createObjectURL(blob));
+  //   worker.onmessage = (e) => {
+  //     const { type, data } = e.data;
+  //     setOutput(prev => [...prev, ...(Array.isArray(data) ? data : [data])]);
+  //   };
+  //   workerRef.current = worker;
+  // };
+
+  // Basic, len je tam eval a to nechcem
+
+  // const runCode = () => {
+  //   setOutput([])
+  //   try { 
+  //     const currentCode = localStorage.getItem("code") ?? "";
+  //     eval(currentCode)
+  //   } 
+  //   catch(e) { setOutput(prev => [...prev, String(e)]); }
+  // };
+
+  // Trosku vylepsena verzia, len nefunguje spravne
+
+// const runCode = async () => {
+//   setOutput([]);
+//   try {
+//     const currentCode = localStorage.getItem("code") ?? "";
+//     const res = await fetch("/api/run", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ code: currentCode, language })
+//     });
+//     const data = await res.json();
+//     setOutput(prev => [...prev, ...(data.output || [])]);
+//   } catch (e) {
+//     setOutput(prev => [...prev, String(e)]);
+//   }
+// };
+
 
 useEffect(() => {
   setCode(localStorage.getItem("code") ?? "");
 }, []);
 
-  function handleChange(value?: string) {
-    const v = value ?? "";
-    localStorage.setItem("code", v);
-  };
-
-const [seconds, setSeconds] = useState(0)
-const [minutes, setMinutes] = useState(0)
-const start = performance.now()
-
 useEffect(() => {
+  startRef.current = performance.now()
   const interval = setInterval(() => {
-    const elapsed = Math.round((performance.now() - start) / 1000);
-    const newMinutes = elapsed / 60;
-    const newSeconds = elapsed % 60;
-    if(newMinutes % 1 == 0) {
-      setMinutes(newMinutes)
+    if(startRef.current !== null) {
+      const elapsed = Math.floor((performance.now() - startRef.current) / 1000);
+      setHours(Math.floor(elapsed / 3600))
+      setMinutes(Math.floor(elapsed / 60) % 60)
+      setSeconds(elapsed % 60)
     }
-    setSeconds(newSeconds)
   }, 1000);
 
   return () => clearInterval(interval);
 }, []);
+
+function checkSolution() {
+  tasks.map((task) => {
+    console.log(task.tests)
+})
+}
 
   return (
   <>
@@ -97,17 +210,20 @@ useEffect(() => {
       navzájom anagramy. <br></br> <br></br> Anagram znamená, že slová majú rovnaké znaky v rovnakom počte, iba v inom poradí.
     </p> */}
 
-  <p className={styles.time}>{minutes} min. a {seconds} sek. práce za sebou</p>
+  <p className={styles.time}>{hours >= 1 ? <> {hours} hod.,  </> : null}{minutes} min. a {seconds} sek. práce za sebou</p>
 
       <button className={styles.runCode} onClick={runCode}>Spustenie kódu</button>
-      <Link href="/feedback"><button className={styles.feedback}>Dokončenie úlohy</button></Link>
+      <Link href="/feedback"></Link>
+      <button className={styles.feedback} onClick={checkSolution}>Dokončenie úlohy</button>
       <Link href="/"><button className={styles.backButton}>Návrat na hlavnú stránku</button></Link>
     </div>
-    <MonacoEditor height="100vh" defaultLanguage="javascript"
+    <MonacoEditor height="100vh" language={language}
     loading={<div className={styles.loading_screen}>Loading ...</div>}
     theme="vs-dark"
-    defaultValue={code}
-    onChange={handleChange}
+    value={code}
+    onChange={(v) => { 
+      setCode(v ?? "")
+      localStorage.setItem("code", v ?? "") }}
       options={{
       minimap: { enabled: false },
       fontSize: 14

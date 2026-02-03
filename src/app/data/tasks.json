@@ -1,17 +1,55 @@
 {
   "tasks": [
-    {
-      "language": "JavaScript",
-      "title": "Zoskupenie anagramov",
-      "description": "Napíš funkciu, ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú navzájom anagramy.",
-      "input": "[\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]",
-      "output": "[[\"eat\", \"tea\", \"ate\"], [\"tan\", \"nat\"], [\"bat\"]]",
-      "conditions": [
-        "riešenie v JavaScripte",
-        "poradie skupín ani slov nie je dôležité",
-        "riešenie má byť efektívne"
-      ]
-    },
+      {
+    "language": "JavaScript",
+    "title": "Zoskupenie anagramov",
+    "description": "Napíš funkciu, ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú navzájom anagramy.",
+    "input": "[\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]",
+    "output": "[[\"eat\", \"tea\", \"ate\"], [\"tan\", \"nat\"], [\"bat\"]]",
+    "conditions": [
+      "riešenie v JavaScripte",
+      "poradie skupín ani slov nie je dôležité",
+      "riešenie má byť efektívne"
+    ],
+    "tests": [
+      {
+        "name": "basic example",
+        "cases": [
+          { "input": ["eat","tea","tan","ate","nat","bat"], "output": [["eat","tea","ate"],["tan","nat"],["bat"]] }
+        ]
+      },
+      {
+        "name": "empty input",
+        "cases": [
+          { "input": [], "output": [] }
+        ]
+      },
+      {
+        "name": "single element",
+        "cases": [
+          { "input": ["abc"], "output": [["abc"]] }
+        ]
+      },
+      {
+        "name": "all anagrams",
+        "cases": [
+          { "input": ["abc","bca","cab"], "output": [["abc","bca","cab"]] }
+        ]
+      },
+      {
+        "name": "no anagrams",
+        "cases": [
+          { "input": ["a","b","c"], "output": [["a"],["b"],["c"]] }
+        ]
+      },
+      {
+        "name": "repeated words",
+        "cases": [
+          { "input": ["eat","eat","tea"], "output": [["eat","eat","tea"]] }
+        ]
+      }
+    ]
+  },
     {
       "language": "JavaScript",
       "title": "Palindrómový reťazec",
