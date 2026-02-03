@@ -6,6 +6,7 @@
     "description": "Napíš funkciu, ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú navzájom anagramy.",
     "input": "[\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]",
     "output": "[[\"eat\", \"tea\", \"ate\"], [\"tan\", \"nat\"], [\"bat\"]]",
+    "functionName": "groupAnagrams",
     "conditions": [
       "riešenie v JavaScripte",
       "poradie skupín ani slov nie je dôležité",

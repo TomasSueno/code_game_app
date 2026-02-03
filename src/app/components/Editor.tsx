@@ -15,23 +15,10 @@ const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false 
     input: string;
     output: string;
     conditions: string[];
+    functionName: string;
   }
 
 export default function Editor() {
-
-     // {
-    //   "language": "JavaScript",
-    //   "title": "Zoskupenie anagramov",
-    //   "description": "Napíš funkciu, ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú navzájom anagramy.",
-    //   "input": "[\"eat\", \"tea\", \"tan\", \"ate\", \"nat\", \"bat\"]",
-    //   "output": "[[\"eat\", \"tea\", \"ate\"], [\"tan\", \"nat\"], [\"bat\"]]",
-    //   "conditions": [
-    //     "riešenie v JavaScripte",
-    //     "poradie skupín ani slov nie je dôležité",
-    //     "riešenie má byť efektívne"
-    //   ]
-    // },
-
   const [code, setCode] = useState("")
 
   const [output, setOutput] = useState<string[]>([]);
@@ -60,103 +47,76 @@ export default function Editor() {
     return () => { console.log = consoleRef.current };
   }, []);
 
-
-  const runCode = () => {
-    setOutput([]);
-    if(language == "javascript") {
-    if (workerRef.current) workerRef.current.terminate(); // zastav predchádzajúci worker
-
-    const blob = new Blob([`
-      self.console = { log: (...args) => postMessage({ type: 'log', data: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)) }) };
-      try { ${code} } catch(e) { postMessage({ type: 'error', data: String(e) }); }
-    `], { type: "application/javascript" });
-
-    const worker = new Worker(URL.createObjectURL(blob));
-    worker.onmessage = (e) => {
-      const { type, data } = e.data;
-      setOutput(prev => [...prev, ...(Array.isArray(data) ? data : [data])]);
+const createWorker = () => {
+  const blob = new Blob([`
+    self.console = {
+      log: (...args) =>
+        postMessage({ type: "log", data: args.map(a => typeof a === "object" ? JSON.stringify(a) : String(a)) })
     };
-    workerRef.current = worker;
-    }
 
-      if (language === "python") {
-    const lines = code.split("\n");
-    lines.forEach(line => {
-      const match = line.match(/print\("(.*)"\)/);
-      if (match) setOutput(prev => [...prev, match[1]]);
-    });
-    return;
-  }
+    self.onmessage = (e) => {
+      const { code, fnName, input } = e.data;
+      try {
+        let iterations = 0;
 
-  if (language === "c") {
-const lines = code.split("\n");
+        ['forEach', 'map', 'filter', 'reduce', 'some', 'every', 'sort'].forEach(method => {
+          const original = Array.prototype[method];
+          Array.prototype[method] = function(...args) {
+            iterations += this.length;
+            return original.apply(this, args);
+          };
+        });
 
-lines.forEach(line => {
-  const match = line.match(/printf\s*\(\s*"([^"]*)"\s*\)\s*;?/);
-  if (!match) return;
+        const fn = eval(code + '; ' + fnName);
 
-  const text = match[1]
-    .replace(/\\n/g, "\n")
-    .replace(/\\t/g, "\t")
-    .replace(/\\"/g, "\"");
+        const wrappedFn = (...args) => {
+          iterations++;
+          return fn(...args);
+        };
 
-  setOutput(prev => [...prev, text]);
-});
+        let userInput = Array.isArray(input[0]) ? input[0] : input;
+        const result = wrappedFn(userInput);
 
-return;
+        postMessage({
+          type: "result",
+          data: {
+            output: result,
+            iterations
+          }
+        });
 
-  }
+      } catch (err) {
+        postMessage({ type: "error", data: String(err) });
+      }
+    };
+  `], { type: "application/javascript" });
 
+  return new Worker(URL.createObjectURL(blob));
+};
+
+
+
+
+const runCode = () => {
+  setOutput([]);
+  if (workerRef.current) workerRef.current.terminate();
+  const worker = createWorker();
+
+  worker.onmessage = (e) => {
+    const { type, data } = e.data;
+    if (type === "log") setOutput(prev => [...prev, ...data]);
+    if (type === "error") setOutput(prev => [...prev, "Error: " + data]);
   };
 
+  worker.postMessage({
+    code,
+    fnName: "groupAnagrams",
+    input: [[["eat", "tea", "tan", "ate", "nat", "bat"]]]
+  });
 
-  // Pre javascript
+  workerRef.current = worker;
+};
 
-  //   const runCode = () => {
-  //   setOutput([]);
-  //   if (workerRef.current) workerRef.current.terminate(); // zastav predchádzajúci worker
-
-  //   const blob = new Blob([`
-  //     self.console = { log: (...args) => postMessage({ type: 'log', data: args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)) }) };
-  //     try { ${code} } catch(e) { postMessage({ type: 'error', data: String(e) }); }
-  //   `], { type: "application/javascript" });
-
-  //   const worker = new Worker(URL.createObjectURL(blob));
-  //   worker.onmessage = (e) => {
-  //     const { type, data } = e.data;
-  //     setOutput(prev => [...prev, ...(Array.isArray(data) ? data : [data])]);
-  //   };
-  //   workerRef.current = worker;
-  // };
-
-  // Basic, len je tam eval a to nechcem
-
-  // const runCode = () => {
-  //   setOutput([])
-  //   try { 
-  //     const currentCode = localStorage.getItem("code") ?? "";
-  //     eval(currentCode)
-  //   } 
-  //   catch(e) { setOutput(prev => [...prev, String(e)]); }
-  // };
-
-  // Trosku vylepsena verzia, len nefunguje spravne
-
-// const runCode = async () => {
-//   setOutput([]);
-//   try {
-//     const currentCode = localStorage.getItem("code") ?? "";
-//     const res = await fetch("/api/run", {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ code: currentCode, language })
-//     });
-//     const data = await res.json();
-//     setOutput(prev => [...prev, ...(data.output || [])]);
-//   } catch (e) {
-//     setOutput(prev => [...prev, String(e)]);
-//   }
-// };
 
 
 useEffect(() => {
@@ -178,10 +138,90 @@ useEffect(() => {
 }, []);
 
 function checkSolution() {
-  tasks.map((task) => {
-    console.log(task.tests)
-})
+  const task = tasks.find(t => t.title === taskName);
+  if (!task) return;
+  setOutput([]);
+  if (workerRef.current) workerRef.current.terminate();
+  const worker = createWorker();
+  workerRef.current = worker;
+
+  if (task.tests) {
+    const results: string[] = [];
+    let testIndex = 0;
+
+    const runNext = () => {
+      if (testIndex >= task.tests.length) return;
+      const test = task.tests[testIndex];
+      let caseIndex = 0;
+
+      const runCase = () => {
+        if (caseIndex >= test.cases.length) {
+          testIndex++;
+          runNext();
+          return;
+        }
+
+        const testCase = test.cases[caseIndex];
+
+        worker.onmessage = (e) => {
+          const { type, data } = e.data;
+          if (type === "result") {
+            const expected = JSON.stringify(testCase.output);
+            const returned = JSON.stringify(data.output);
+            results.push(`Test "${test.name}" case ${caseIndex + 1}: ${returned === expected ? "✅" : "❌"}`);
+            results.push(`Loop Iterations: ${data.iterations}`);
+            results.push(`Count of lines: ${code.split("\n").length}`);
+            results.push(`Count of characters: ${code.length}`);
+            results.push(`Time: ${hours} hod., ${minutes} min. a ${seconds} sek.`);
+            caseIndex++;
+            runCase();
+          }
+          if (type === "error") {
+            results.push(`Test "${test.name}" case ${caseIndex + 1}: ❌ Error: ${data}`);
+            caseIndex++;
+            runCase();
+          }
+        };
+
+        worker.postMessage({
+          code,
+          fnName: task.functionName || "mainFunction",
+          input: [testCase.input]
+        });
+      };
+
+      runCase();
+    };
+
+    runNext();
+    setOutput(results);
+  } else {
+    worker.onmessage = (e) => {
+      const { type, data } = e.data;
+      if (type === "result") {
+        const expected = JSON.stringify(task.output);
+        const returned = JSON.stringify(data.output);
+        setOutput([
+          returned === expected ? "✅ Passed" : "❌ Failed",
+          "Loop Iterations: " + data.iterations
+        ]);
+      }
+      if (type === "error") setOutput(prev => [...prev, `Error: ${data}`]);
+    };
+
+    worker.postMessage({
+      code,
+      fnName: task.functionName || "mainFunction",
+      input: [JSON.parse(task.input)]
+    });
+  }
 }
+
+
+
+
+
+
 
   return (
   <>
@@ -206,9 +246,6 @@ function checkSolution() {
       : null
     ))
     }
-    {/* <p>Napíš funkciu groupAnagrams(words), ktorá zoskupí reťazce tak, aby každá skupina obsahovala slová, ktoré sú 
-      navzájom anagramy. <br></br> <br></br> Anagram znamená, že slová majú rovnaké znaky v rovnakom počte, iba v inom poradí.
-    </p> */}
 
   <p className={styles.time}>{hours >= 1 ? <> {hours} hod.,  </> : null}{minutes} min. a {seconds} sek. práce za sebou</p>
 
