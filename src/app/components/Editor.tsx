@@ -41,7 +41,7 @@ export default function Editor() {
   
   const router = useRouter()
 
-  const MAX_PASTE = 200;
+  const MAX_PASTE = 2000;
 
 const handleEditorMount = (editor: any, monaco: any) => {
   const pasteCommand = editor.addCommand(
@@ -257,13 +257,16 @@ function checkSolution() {
           const pTime  = Math.min(timeSeconds / MAX_TIME, 1);
           const pIter  = Math.min(iterations / MAX_ITERATIONS, 1);
 
-          const score = Math.round(
-            100 * (1 -
-              (W_CHARS * pChars +
-               W_LINES * pLines +
-               W_TIME  * pTime +
-               W_ITER  * pIter))
-          );
+const rawScore = Math.round(
+  100 * (1 -
+    (W_CHARS * pChars +
+     W_LINES * pLines +
+     W_TIME  * pTime +
+     W_ITER  * pIter))
+);
+
+const score = passed ? rawScore : 0;
+
 
           totalScore += score;
           scoreCount++;
