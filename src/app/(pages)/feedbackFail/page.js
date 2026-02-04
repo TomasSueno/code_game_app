@@ -1,12 +1,12 @@
-import Feedback from '../../components/Feedback'
+import FeedbackFail from '../../components/FeedbackFail'
 import Navbar from "../navbar/page.js"
 import Footer from "../footer/page.js"
 
-export default function feedback() {
+export default function feedbackFail() {
     return (
         <>
             <Navbar />
-            <Feedback />
+            <FeedbackFail />
             <Footer />
         </>
     )

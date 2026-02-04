@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import Tasks from "../data/tasks.json"
+import { useRouter } from "next/navigation";
 
 const MonacoEditor = dynamic(() => import('@monaco-editor/react'), { ssr: false });
 
@@ -37,6 +38,40 @@ export default function Editor() {
   const startRef = useRef<number | null>(null)
 
   const workerRef = useRef<Worker | null>(null)
+  
+  const router = useRouter()
+
+  const MAX_PASTE = 200;
+
+const handleEditorMount = (editor: any, monaco: any) => {
+  const pasteCommand = editor.addCommand(
+    monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyV,
+    async () => {
+      try {
+        const text = await navigator.clipboard.readText();
+        if (!text) return;
+
+        const selection = editor.getSelection();
+        if (!selection) return;
+
+        editor.executeEdits("paste-limit", [
+          {
+            range: selection,
+            text: text.slice(0, MAX_PASTE),
+            forceMoveMarkers: true
+          }
+        ]);
+      } catch {
+        /* clipboard access denied */
+      }
+    }
+  );
+
+  editor.onDidDispose(() => {
+    editor.removeCommand(pasteCommand);
+  });
+};
+
 
   useEffect(() => {
     console.log = (...args: any[]) => {
@@ -147,10 +182,33 @@ function checkSolution() {
 
   if (task.tests) {
     const results: string[] = [];
+    let passedCount = 0;
+    let totalCount = 0;
+
     let testIndex = 0;
 
     const runNext = () => {
-      if (testIndex >= task.tests.length) return;
+      if (testIndex >= task.tests.length) {
+        setOutput(results);
+        if (passedCount === totalCount) {
+        //   router.push({
+        //   pathname: "/feedbackSuccess",
+        //   query: {
+        //     code,
+        //     seconds,
+        //     output,
+        //   },
+        // });
+
+        router.push(
+  `/feedbackSuccess?hours=${hours}&?minutes=${minutes}&seconds=${seconds}&output=${output}`
+);
+        } else {
+          router.push("/feedbackFail");   
+        }
+        return;
+      }
+
       const test = task.tests[testIndex];
       let caseIndex = 0;
 
@@ -162,17 +220,22 @@ function checkSolution() {
         }
 
         const testCase = test.cases[caseIndex];
+        totalCount++;
 
         worker.onmessage = (e) => {
           const { type, data } = e.data;
           if (type === "result") {
             const expected = JSON.stringify(testCase.output);
             const returned = JSON.stringify(data.output);
-            results.push(`Test "${test.name}" case ${caseIndex + 1}: ${returned === expected ? "✅" : "❌"}`);
+            const passed = returned === expected;
+            if (passed) passedCount++;
+
+            results.push(`Test "${test.name}" case ${caseIndex + 1}: ${passed ? "✅" : "❌"}`);
             results.push(`Loop Iterations: ${data.iterations}`);
             results.push(`Count of lines: ${code.split("\n").length}`);
             results.push(`Count of characters: ${code.length}`);
             results.push(`Time: ${hours} hod., ${minutes} min. a ${seconds} sek.`);
+
             caseIndex++;
             runCase();
           }
@@ -194,28 +257,9 @@ function checkSolution() {
     };
 
     runNext();
-    setOutput(results);
-  } else {
-    worker.onmessage = (e) => {
-      const { type, data } = e.data;
-      if (type === "result") {
-        const expected = JSON.stringify(task.output);
-        const returned = JSON.stringify(data.output);
-        setOutput([
-          returned === expected ? "✅ Passed" : "❌ Failed",
-          "Loop Iterations: " + data.iterations
-        ]);
-      }
-      if (type === "error") setOutput(prev => [...prev, `Error: ${data}`]);
-    };
-
-    worker.postMessage({
-      code,
-      fnName: task.functionName || "mainFunction",
-      input: [JSON.parse(task.input)]
-    });
   }
 }
+
 
 
 
@@ -255,6 +299,7 @@ function checkSolution() {
       <Link href="/"><button className={styles.backButton}>Návrat na hlavnú stránku</button></Link>
     </div>
     <MonacoEditor height="100vh" language={language}
+    onMount={handleEditorMount}
     loading={<div className={styles.loading_screen}>Loading ...</div>}
     theme="vs-dark"
     value={code}
