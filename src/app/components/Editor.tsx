@@ -175,90 +175,139 @@ useEffect(() => {
 function checkSolution() {
   const task = tasks.find(t => t.title === taskName);
   if (!task) return;
+
   setOutput([]);
   if (workerRef.current) workerRef.current.terminate();
+
   const worker = createWorker();
   workerRef.current = worker;
 
-  if (task.tests) {
-    const results: string[] = [];
-    let passedCount = 0;
-    let totalCount = 0;
+  if (!task.tests) return;
 
-    let testIndex = 0;
+  const results: string[] = [];
 
-    const runNext = () => {
-      if (testIndex >= task.tests.length) {
-        setOutput(results);
-        if (passedCount === totalCount) {
-        //   router.push({
-        //   pathname: "/feedbackSuccess",
-        //   query: {
-        //     code,
-        //     seconds,
-        //     output,
-        //   },
-        // });
+  let passedCount = 0;
+  let totalCount = 0;
 
-        router.push(
-  `/feedbackSuccess?hours=${hours}&?minutes=${minutes}&seconds=${seconds}`
-);
-        } else {
-          router.push("/feedbackFail");   
-        }
+  let totalScore = 0;
+  let scoreCount = 0;
+
+  let testIndex = 0;
+
+  const runNext = () => {
+    if (testIndex >= task.tests.length) {
+      const avgScore = scoreCount
+        ? Math.round(totalScore / scoreCount)
+        : 0;
+
+      results.push(`====================`); 
+      results.push(`Passed: ${passedCount} / ${totalCount}`);
+      results.push(`Average score: ${avgScore}/100`);
+      results.push(
+        passedCount === totalCount
+          ? `Result: ✅ SUCCESS`
+          : `Result: ❌ FAILED`
+      );
+      results.push(`====================`);
+
+      setOutput(results);
+      return;
+    }
+
+    const test = task.tests[testIndex];
+    let caseIndex = 0;
+
+    const runCase = () => {
+      if (caseIndex >= test.cases.length) {
+        testIndex++;
+        runNext();
         return;
       }
 
-      const test = task.tests[testIndex];
-      let caseIndex = 0;
+      const testCase = test.cases[caseIndex];
+      totalCount++;
 
-      const runCase = () => {
-        if (caseIndex >= test.cases.length) {
-          testIndex++;
-          runNext();
-          return;
+      worker.onmessage = (e) => {
+        const { type, data } = e.data;
+
+        if (type === "result") {
+          const expected = JSON.stringify(testCase.output);
+          const returned = JSON.stringify(data.output);
+          const passed = returned === expected;
+
+          if (passed) passedCount++;
+
+          const charCount = code.length;
+          const lineCount = code.split("\n").length;
+          const timeSeconds = hours * 3600 + minutes * 60 + seconds;
+          const iterations = data.iterations;
+
+          const MAX_CHARS = 1000;
+          const MAX_LINES = 100;
+          const MAX_TIME = 600;
+          const MAX_ITERATIONS = 1e6;
+
+          const W_CHARS = 0.25;
+          const W_LINES = 0.25;
+          const W_TIME  = 0.20;
+          const W_ITER  = 0.30;
+
+          const pChars = Math.min(charCount / MAX_CHARS, 1);
+          const pLines = Math.min(lineCount / MAX_LINES, 1);
+          const pTime  = Math.min(timeSeconds / MAX_TIME, 1);
+          const pIter  = Math.min(iterations / MAX_ITERATIONS, 1);
+
+          const score = Math.round(
+            100 * (1 -
+              (W_CHARS * pChars +
+               W_LINES * pLines +
+               W_TIME  * pTime +
+               W_ITER  * pIter))
+          );
+
+          totalScore += score;
+          scoreCount++;
+
+          results.push(`Test "${test.name}": ${passed ? "✅" : "❌"}`);
+          results.push(`Loop Iterations: ${iterations}`);
+          results.push(`Count of lines: ${lineCount}`);
+          results.push(`Count of characters: ${charCount}`);
+          results.push(`Time: ${hours} hod., ${minutes} min. a ${seconds} sek.`);
+          results.push(`Score: ${score}/100`);
+
+          const isLast =
+            testIndex === task.tests.length - 1 &&
+            caseIndex === test.cases.length - 1;
+
+          if (!isLast) {
+            results.push(`-----------------------------------------`);
+          }
+
+          caseIndex++;
+          runCase();
         }
 
-        const testCase = test.cases[caseIndex];
-        totalCount++;
+        if (type === "error") {
+          results.push(`Test "${test.name}": ❌ Error: ${data}`);
 
-        worker.onmessage = (e) => {
-          const { type, data } = e.data;
-          if (type === "result") {
-            const expected = JSON.stringify(testCase.output);
-            const returned = JSON.stringify(data.output);
-            const passed = returned === expected;
-            if (passed) passedCount++;
-
-            results.push(`Test "${test.name}" case ${caseIndex + 1}: ${passed ? "✅" : "❌"}`);
-            results.push(`Loop Iterations: ${data.iterations}`);
-            results.push(`Count of lines: ${code.split("\n").length}`);
-            results.push(`Count of characters: ${code.length}`);
-            results.push(`Time: ${hours} hod., ${minutes} min. a ${seconds} sek.`);
-
-            caseIndex++;
-            runCase();
-          }
-          if (type === "error") {
-            results.push(`Test "${test.name}" case ${caseIndex + 1}: ❌ Error: ${data}`);
-            caseIndex++;
-            runCase();
-          }
-        };
-
-        worker.postMessage({
-          code,
-          fnName: task.functionName || "mainFunction",
-          input: [testCase.input]
-        });
+          caseIndex++;
+          runCase();
+        }
       };
 
-      runCase();
+      worker.postMessage({
+        code,
+        fnName: task.functionName || "mainFunction",
+        input: [testCase.input]
+      });
     };
 
-    runNext();
-  }
+    runCase();
+  };
+
+  runNext();
 }
+
 
 
 
