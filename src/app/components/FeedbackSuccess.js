@@ -2,14 +2,14 @@
 
 import styles from "../styles/Feedback.module.css"
 import Link from "next/link"
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 
 export default function FeedbackSuccess() {
-const searchParams = useSearchParams();
+// const searchParams = useSearchParams();
 
-const seconds = Number(searchParams.get("seconds") ?? 0);
-const minutes = Number(searchParams.get("minutes") ?? 0);
-const hours = Number(searchParams.get("hours") ?? 0);
+// const seconds = Number(searchParams.get("seconds") ?? 0);
+// const minutes = Number(searchParams.get("minutes") ?? 0);
+// const hours = Number(searchParams.get("hours") ?? 0);
 
 
     return (
@@ -27,7 +27,8 @@ const hours = Number(searchParams.get("hours") ?? 0);
 
           <div>
             <span>Čas vykonania:</span>
-            <strong>{hours >= 1 ? <> {hours} hod.,  </> : null} {minutes >= 1 || (hours < 1 && minutes == 0) ? <>{minutes} "min. a"</> : null } {seconds} sek.</strong>
+            {/* <strong>{hours >= 1 ? <> {hours} hod.,  </> : null} {minutes >= 1 || (hours < 1 && minutes == 0) ? <>{minutes} "min. a"</> : null } {seconds} sek.</strong> */}
+            <strong>4 minuty a 8 sekund</strong>
           </div>
 
                     <div>
