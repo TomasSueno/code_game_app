@@ -2,14 +2,15 @@
 
 import styles from "../styles/Feedback.module.css"
 import Link from "next/link"
-// import { useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function FeedbackSuccess() {
-// const searchParams = useSearchParams();
+const searchParams = useSearchParams();
 
-const seconds = searchParams.get("seconds");
-const minutes = searchParams.get("minutes");
-const hours = searchParams.get("hours");
+const seconds = Number(searchParams.get("seconds") ?? 0);
+const minutes = Number(searchParams.get("minutes") ?? 0);
+const hours = Number(searchParams.get("hours") ?? 0);
+
 
     return (
 
