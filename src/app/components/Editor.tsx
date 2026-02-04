@@ -201,7 +201,7 @@ function checkSolution() {
         // });
 
         router.push(
-  `/feedbackSuccess?hours=${hours}&?minutes=${minutes}&seconds=${seconds}&output=${output}`
+  `/feedbackSuccess?hours=${hours}&?minutes=${minutes}&seconds=${seconds}`
 );
         } else {
           router.push("/feedbackFail");   

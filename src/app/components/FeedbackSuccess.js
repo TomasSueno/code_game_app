@@ -7,11 +7,9 @@ import { useSearchParams } from "next/navigation";
 export default function FeedbackSuccess() {
 const searchParams = useSearchParams();
 
-const code = searchParams.get("code");
 const seconds = searchParams.get("seconds");
 const minutes = searchParams.get("minutes");
 const hours = searchParams.get("hours");
-const output = searchParams.get("output");
 
     return (
 
